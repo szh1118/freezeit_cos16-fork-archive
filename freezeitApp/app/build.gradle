@@ -1,0 +1,89 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+}
+
+android {
+    signingConfigs {
+        release {
+            def localStore = providers.gradleProperty('FREEZEIT_KEYSTORE')
+                    .orElse(providers.environmentVariable('FREEZEIT_KEYSTORE'))
+                    .orNull
+            if (localStore != null && file(localStore).exists()) {
+                storeFile file(localStore)
+                storePassword providers.gradleProperty('FREEZEIT_KEYSTORE_PASSWORD')
+                        .orElse(providers.environmentVariable('FREEZEIT_KEYSTORE_PASSWORD'))
+                        .orElse('freezeit')
+                        .get()
+                keyAlias providers.gradleProperty('FREEZEIT_KEY_ALIAS')
+                        .orElse(providers.environmentVariable('FREEZEIT_KEY_ALIAS'))
+                        .orElse('freezeit')
+                        .get()
+                keyPassword providers.gradleProperty('FREEZEIT_KEY_PASSWORD')
+                        .orElse(providers.environmentVariable('FREEZEIT_KEY_PASSWORD'))
+                        .orElse(storePassword)
+                        .get()
+            } else {
+                initWith signingConfigs.debug
+            }
+        }
+    }
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "io.github.jark006.freezeit"
+        minSdk 31
+        targetSdk 34
+        versionCode 301000
+        versionName "3.1.0Alpha"
+
+        resValue "string", "versionName", "${versionName}"
+        signingConfig signingConfigs.release
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            multiDexEnabled false
+        }
+    }
+    android.applicationVariants.configureEach {
+        variant ->
+            variant.outputs.configureEach {
+                outputFileName = "freezeit_v${versionName}_${variant.buildType.name}.apk"
+            }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+    namespace 'io.github.jark006.freezeit'
+    dependenciesInfo {
+        includeInApk false
+        includeInBundle false
+    }
+}
+
+dependencies {
+
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'io.github.libxposed:api:102.0.0'
+
+    implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.9.0'))
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
+    implementation 'androidx.navigation:navigation-fragment:2.7.7'
+    implementation 'androidx.navigation:navigation-ui:2.7.7'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.google.android.material:material:1.11.0'
+}

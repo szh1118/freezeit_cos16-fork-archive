@@ -80,6 +80,59 @@ private:
         fclose(fp);
     }
 
+    map<string, string> readKeyValueFile(const string& path) {
+        map<string, string> values;
+        auto fp = fopen(path.c_str(), "r");
+        if (!fp)
+            return values;
+
+        char tmp[1024 * 4];
+        while (fgets(tmp, sizeof(tmp), fp)) {
+            if (!isalpha(tmp[0])) continue;
+            tmp[sizeof(tmp) - 1] = 0;
+            auto ptr = strchr(tmp, '=');
+            if (!ptr) continue;
+
+            *ptr = 0;
+            for (size_t i = (ptr - tmp) + 1; i < sizeof(tmp); i++) {
+                if (tmp[i] == '\n' || tmp[i] == '\r') {
+                    tmp[i] = 0;
+                    break;
+                }
+            }
+            values[string(tmp)] = string(ptr + 1);
+        }
+        fclose(fp);
+        return values;
+    }
+
+    void logRomBaselineWarning() {
+        auto baseline = readKeyValueFile(modulePath + "/rom_baseline.prop");
+        if (baseline.empty()) {
+            log("ROM baseline metadata missing; continuing startup");
+            return;
+        }
+
+        char deviceFingerprint[PROP_VALUE_MAX] = {};
+        char deviceIncremental[PROP_VALUE_MAX] = {};
+        __system_property_get("ro.build.fingerprint", deviceFingerprint);
+        __system_property_get("ro.build.version.incremental", deviceIncremental);
+
+        const auto baselineFingerprint = baseline["rom.build.fingerprint"];
+        if (!baselineFingerprint.empty() && deviceFingerprint[0] &&
+            baselineFingerprint != deviceFingerprint) {
+            logFmt("WARNING ROM fingerprint mismatch; continuing startup. baseline=[%s] device=[%s]",
+                baselineFingerprint.c_str(), deviceFingerprint);
+        }
+
+        const auto baselineIncremental = baseline["rom.build.incremental"];
+        if (!baselineIncremental.empty() && deviceIncremental[0] &&
+            baselineIncremental != deviceIncremental) {
+            logFmt("WARNING ROM incremental mismatch; continuing startup. baseline=[%s] device=[%s]",
+                baselineIncremental.c_str(), deviceIncremental);
+        }
+    }
+
 
 public:
 
@@ -172,6 +225,7 @@ public:
 
         logFmt("模块版本 %s(%s)", prop["version"].c_str(), prop["versionCode"].c_str());
         logFmt("编译时间 %s %s UTC+8", compilerDate, __TIME__);
+        logRomBaselineWarning();
 
         fprintf(stderr, "version %s", prop["version"].c_str()); // 发送当前版本信息给监控进程
 

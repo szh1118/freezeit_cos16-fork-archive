@@ -1,2 +1,6 @@
-### v3.x 更新日志 2024-xx-xx
-1. 无
+### v3.1.0Alpha self-use validation notes 2026-07-03
+1. Added Linux ARM64 native build and Magisk package helpers for the OnePlus 13 Android 16 self-use target.
+2. Packaged ROM baseline metadata from /home/admin/code/Rom/oneplus13.zip and log build mismatches as warnings only.
+3. Added hook-readiness gating before freeze/control operations plus manager-visible skip and failure diagnostics.
+4. Added LSPosed libxposed API 102 entry/backend while retaining the legacy Xposed entry for older runtimes.
+5. Scope remains one self-use target ROM; no support claim is made for other ROMs, devices, Android versions, or public releases.

@@ -1,34 +1,68 @@
-# ❌ 本项目已停止维护 ❌
+# freezeit_cos16
 
----
+Freezeit / 冻它 的 COS16 自用适配版。
 
-# Freezeit 冻它
+本仓库由 @szh1118 继续维护，基于原作者 JARK006 的 Freezeit 项目改版，保留原项目的 Magisk 模块、管理器 APK、native 服务和 LSPosed/Xposed hook 结构。
 
-**[面具模块]** 实现部分墓碑机制，自动暂停后台进程的运行。
+## 适配环境
 
-**[MagiskModule]** Implement a partial tombstone mechanism to automatically suspend background processes.
+- 设备：OnePlus 13
+- 实测机型：CPH2653 / CPH2653EEA
+- 系统：ColorOS 16 / Android 16
+- SDK：API 36
+- ROM 基线：BP2A.250605.015 / V.R4T3.1338e95_e24685_de185d
+- Root：Magisk / Zygisk 环境
+- Xposed：LSPosed IT v2.1.0-it，Modern Xposed API 102
+- 模块版本：3.1.0Alpha / versionCode 301000
 
-### 开发说明
+## 本版改动
 
-1. 使用 `VisualStudio2022` 进行开发，在 `VisualStudio Installer` 中安装 `使用C++的移动开发` 组件，如果不安装，`智能提示` 将无法工作。
-1. 在 `build_pack.ps1` 第18/19行 设置 NDK工具链路径 `$ndkPath` 和 zip打包路径 `$releaseDir`, 然后执行 `build_pack.ps1` 即可直接编译及打包 (项目生成功能已设为执行 build_pack.ps1，所以通过菜单 “生成-重新生成freezeitVS” 即可进行编译打包)。
-1. 其中 `$ndkPath` 可以使用第一步安装的组件，默认路径 `C:\Microsoft\AndroidNDK\android-ndk-r23c`，也可以使用AndroidSDK里的NDK(如果你有的话)，也可以使用单独的NDK工具链（[下载地址](https://developer.android.com/ndk/downloads)）。
+- 适配 Android 16 / COS16 上的 system scope：LSPosed 作用域使用 `system`，同时包含管理器本包。
+- 保留 legacy Xposed 入口，并新增 libxposed API 102 modern entry/backend。
+- 增加 Android 16 / OnePlus 13 自用 ROM 基线记录，ROM 差异只作为 warning 记录，不阻止启动。
+- 增加 hook readiness gate，避免 Xposed 侧尚未就绪时过早执行冻结控制。
+- 增加 Linux ARM64 native 构建脚本和 Magisk 打包脚本。
 
-### 相关链接
+## 目录
 
-1. [项目开源地址](https://github.com/jark006/freezeitVS)
+- `freezeitVS/`：native 服务、Magisk 模块脚本、打包脚本。
+- `freezeitApp/`：管理器 APK 和 Xposed hook 代码。
+- `freezeitRelease/`：当前打包好的 Magisk zip。
 
-1. [管理器开源地址](https://github.com/jark006/freezeitapp)
+## 安装
 
-1. [模块包发布地址](https://github.com/jark006/freezeitRelease)
+1. 在 Magisk 中刷入 `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.1.0Alpha_301000.zip`。
+2. 在 LSPosed 中启用冻它模块。
+3. 作用域至少选择：
+   - 系统框架 / `system`
+   - 冻它管理器 / `io.github.jark006.freezeit`
+4. 重启手机。
 
-### 其他链接
+## 构建
 
-[教程 Tutorials](https://jark006.github.io/FreezeitIntroduction/) |
-[酷安 @JARK006](https://www.coolapk.com/u/1212220) |
-[QQ频道 冻它模块](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1W6opB7&appChannel=share&businessType=9&from=246610&biz=ka) |
-[Telegram Group](https://t.me/+sjDX1oTk31ZmYjY1) |
-[蓝奏云 密码: dy6i](https://jark006.lanzout.com/b017oz9if) 
+管理器 APK：
 
----
+```bash
+cd freezeitApp
+ANDROID_HOME=/home/admin/Android/Sdk \
+ANDROID_SDK_ROOT=/home/admin/Android/Sdk \
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk \
+PATH=/usr/lib/jvm/java-17-openjdk/bin:$PATH \
+bash ./gradlew assembleRelease
+```
 
+Magisk 模块：
+
+```bash
+bash freezeitVS/freezeitVS/build_pack_linux.sh
+```
+
+## 注意
+
+这是 @szh1118 针对自己 COS16 / OnePlus 13 环境维护的适配版，不承诺兼容其他 ROM、机型或 Android 版本。
+
+原项目：
+
+- https://github.com/jark006/freezeitVS
+- https://github.com/jark006/freezeitApp
+- https://github.com/jark006/freezeitRelease

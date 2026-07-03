@@ -10,6 +10,7 @@ private:
     Settings& settings;
 
     thread sndThread;
+    thread protectedStateThread;
 
     constexpr static uint32_t COLOR_E = 0XFF22BB44; // efficiency
     constexpr static uint32_t COLOR_M = 0XFFDD6622; // performance
@@ -55,7 +56,9 @@ public:
     char cpuTempPath[256] = "/sys/class/thermal/thermal_zone0/temp";
 
     bool isAudioPlaying = false;
-    // bool isMicrophoneRecording = false;
+    bool isAudioCapturing = false;
+    bool isCallActive = false;
+    bool isScreenRecording = false;
 
     uint32_t extMemorySize = 0; // MiB
 
@@ -102,6 +105,7 @@ public:
         InitLMK();
 
         sndThread = thread(&SystemTools::sndThreadFunc, this);
+        protectedStateThread = thread(&SystemTools::protectedStateThreadFunc, this);
 
         extMemorySize = getExtMemorySize();
     }
@@ -715,6 +719,84 @@ public:
         return buff[0];
     }
 
+    static bool containsAny(const char* haystack, const char* const needles[], const size_t needleCount) {
+        if (haystack == nullptr || haystack[0] == 0)
+            return false;
+        for (size_t i = 0; i < needleCount; i++)
+            if (strstr(haystack, needles[i]) != nullptr)
+                return true;
+        return false;
+    }
+
+    void readDumpsys(const char* service, char* buf, const size_t len) {
+        if (len == 0)
+            return;
+        buf[0] = 0;
+        const char* cmdList[] = { "/system/bin/dumpsys", "dumpsys", service, nullptr };
+        VPOPEN::vpopen(cmdList[0], cmdList + 1, buf, len);
+    }
+
+    bool detectCallActive() {
+        char buf[32 * 1024] = {};
+        readDumpsys("telecom", buf, sizeof(buf));
+        const char* const activeCallMarkers[] = {
+            "isInCall: true",
+            "mIsInCall=true",
+            "mCallState=ACTIVE",
+            "state=ACTIVE",
+            "state=DIALING",
+            "state=RINGING",
+            "state=HOLDING"
+        };
+        return containsAny(buf, activeCallMarkers, sizeof(activeCallMarkers) / sizeof(activeCallMarkers[0]));
+    }
+
+    bool detectScreenRecording() {
+        char buf[32 * 1024] = {};
+        readDumpsys("media_projection", buf, sizeof(buf));
+        const char* const activeProjectionMarkers[] = {
+            "mProjectionGrant",
+            "mProjectionToken",
+            "ProjectionGrant{",
+            "TYPE_SCREEN_CAPTURE"
+        };
+        const char* const inactiveProjectionMarkers[] = {
+            "mProjectionGrant=null",
+            "mProjectionGrant: null",
+            "mProjectionToken=null",
+            "mProjectionToken: null",
+            "No MediaProjection"
+        };
+        return containsAny(buf, activeProjectionMarkers, sizeof(activeProjectionMarkers) / sizeof(activeProjectionMarkers[0])) &&
+               !containsAny(buf, inactiveProjectionMarkers, sizeof(inactiveProjectionMarkers) / sizeof(inactiveProjectionMarkers[0]));
+    }
+
+    void protectedStateThreadFunc() {
+        bool lastCallActive = false;
+        bool lastScreenRecording = false;
+
+        sleep(8);
+        freezeit.log("初始化保护状态轮询: call/media_projection");
+
+        while (true) {
+            const bool callActive = detectCallActive();
+            const bool screenRecording = detectScreenRecording();
+
+            if (callActive != lastCallActive) {
+                freezeit.logFmt("通话保护状态: %s", callActive ? "active" : "inactive");
+                lastCallActive = callActive;
+            }
+            if (screenRecording != lastScreenRecording) {
+                freezeit.logFmt("屏幕录制保护状态: %s", screenRecording ? "active" : "inactive");
+                lastScreenRecording = screenRecording;
+            }
+
+            isCallActive = callActive;
+            isScreenRecording = screenRecording;
+            sleep(3);
+        }
+    }
+
 
 
     // https://blog.csdn.net/meccaendless/article/details/80238997
@@ -758,6 +840,9 @@ public:
         freezeit.log("初始化同步事件: 0xC0");
 
         int playbackDevicesCnt = 0;
+        int captureDevicesCnt = 0;
+        bool lastAudioPlaying = false;
+        bool lastAudioCapturing = false;
         ssize_t readLen;
 
         while ((readLen = read(inotifyFd, buf, SND_BUF_SIZE)) > 0) {
@@ -766,18 +851,36 @@ public:
                 inotify_event* event{ reinterpret_cast<inotify_event*>(buf + readCnt) };
                 readCnt += sizeof(inotify_event) + event->len;
 
-                if (strncmp(event->name, "pcm", 3) || Utils::lastChar(event->name + 4) != 'p')
+                if (strncmp(event->name, "pcm", 3))
                     continue;
 
-                if ((event->mask) & IN_OPEN) {
-                    playbackDevicesCnt++;
+                const char deviceType = Utils::lastChar(event->name + 4);
+                int* deviceCounter = nullptr;
+                if (deviceType == 'p')
+                    deviceCounter = &playbackDevicesCnt;
+                else if (deviceType == 'c')
+                    deviceCounter = &captureDevicesCnt;
+                else
+                    continue;
+
+                if (event->mask & IN_OPEN) {
+                    (*deviceCounter)++;
                 }
                 else if (event->mask & (IN_CLOSE_WRITE | IN_CLOSE_NOWRITE)) {
-                    if (playbackDevicesCnt > 0)
-                        playbackDevicesCnt--;
+                    if (*deviceCounter > 0)
+                        (*deviceCounter)--;
                 }
             }
             isAudioPlaying = playbackDevicesCnt > 0;
+            isAudioCapturing = captureDevicesCnt > 0;
+            if (isAudioPlaying != lastAudioPlaying) {
+                freezeit.logFmt("音频播放保护状态: %s", isAudioPlaying ? "active" : "inactive");
+                lastAudioPlaying = isAudioPlaying;
+            }
+            if (isAudioCapturing != lastAudioCapturing) {
+                freezeit.logFmt("录音保护状态: %s", isAudioCapturing ? "active" : "inactive");
+                lastAudioCapturing = isAudioCapturing;
+            }
             usleep(500 * 1000);
         }
 

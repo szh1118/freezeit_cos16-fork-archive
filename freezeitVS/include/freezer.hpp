@@ -40,6 +40,8 @@ private:
     set<int> curFgBackup;                //新前台应用备份 用于进入doze前备份， 退出后恢复
     set<int> naughtyApp;                 //冻结期间存在异常解冻或唤醒进程的应用
     mutex naughtyMutex;
+    bool hookReadyForControl = false;
+    uint32_t hookNotReadyLogCountdown = 0;
 
     uint32_t timelineIdx = 0;
     uint32_t unfrozenTimeline[4096] = {};
@@ -348,12 +350,42 @@ public:
         }
     }
 
+    const char* getFreezeSkipReason(const appInfoStruct& appInfo) {
+        if (appInfo.isWhitelist())
+            return appInfo.isSystemApp ? "system app is unselected/whitelisted" : "app is whitelisted";
+        if (curForegroundApp.contains(appInfo.uid))
+            return "app is currently foreground";
+        if (systemTools.isAudioPlaying)
+            return "audio playback is active";
+        if (systemTools.isAudioCapturing)
+            return "audio recording/capture is active";
+        if (systemTools.isCallActive)
+            return "call state is active";
+        if (systemTools.isScreenRecording)
+            return "screen recording/projection is active";
+        return nullptr;
+    }
+
     // < 0 : 冻结binder失败的pid， > 0 : 冻结成功的进程数
     int handleProcess(appInfoStruct& appInfo, const bool freeze) {
         START_TIME_COUNT;
 
         if (freeze) {
+            const char* skipReason = getFreezeSkipReason(appInfo);
+            if (skipReason) {
+                freezeit.logFmt("Skip freeze [%s]: %s", appInfo.label.c_str(), skipReason);
+                END_TIME_COUNT;
+                return 0;
+            }
+        }
+
+        if (freeze) {
             getPids(appInfo);
+            if (appInfo.pids.empty()) {
+                freezeit.logFmt("Skip freeze [%s]: no matching running process found", appInfo.label.c_str());
+                END_TIME_COUNT;
+                return 0;
+            }
         }
         else {
             erase_if(appInfo.pids, [&appInfo](const int pid) {
@@ -884,6 +916,12 @@ public:
                 continue;
             }
 
+            if (!isHookReadyForControl()) {
+                remainSec = 15;
+                it++;
+                continue;
+            }
+
             int num = handleProcess(appInfo, true);
             if (num < 0) {
                 if (appInfo.delayCnt >= 5) {
@@ -954,11 +992,13 @@ public:
             uidCnt * sizeof(int), buff, sizeof(buff));
 
         if (recvLen == 0) {
+            hookReadyForControl = false;
             freezeit.logFmt("%s() 工作异常, 请确认LSPosed中冻它勾选系统框架, 然后重启", __FUNCTION__);
             END_TIME_COUNT;
             return;
         }
         else if (recvLen != 4) {
+            hookReadyForControl = false;
             freezeit.logFmt("%s() 返回数据异常 recvLen[%d]", __FUNCTION__, recvLen);
             if (recvLen > 0 && recvLen < 64 * 4)
                 freezeit.logFmt("DumpHex: %s", Utils::bin2Hex(buff, recvLen).c_str());
@@ -966,11 +1006,35 @@ public:
             return;
         }
         else if (static_cast<REPLY>(buff[0]) == REPLY::FAILURE) {
+            hookReadyForControl = false;
             freezeit.log("Pending更新失败");
+            END_TIME_COUNT;
+            return;
         }
+        hookReadyForControl = true;
         freezeit.debugFmt("pending更新 %d", uidCnt);
         END_TIME_COUNT;
         return;
+    }
+
+    bool isHookReadyForControl() {
+        if (hookReadyForControl)
+            return true;
+
+        if (hookNotReadyLogCountdown == 0) {
+            freezeit.log("Hook readiness gate: delaying app control until Xposed foreground/pending socket responds");
+            hookNotReadyLogCountdown = 15;
+        }
+        else {
+            hookNotReadyLogCountdown--;
+        }
+
+        getVisibleAppByLocalSocket();
+        if (hookReadyForControl)
+            return true;
+
+        updatePendingByLocalSocket();
+        return hookReadyForControl;
     }
 
     void checkWakeup() {
@@ -1055,17 +1119,20 @@ public:
 
         int& UidLen = buff[0];
         if (recvLen <= 0) {
+            hookReadyForControl = false;
             freezeit.logFmt("%s() 工作异常, 请确认LSPosed中冻它勾选系统框架, 然后重启", __FUNCTION__);
             END_TIME_COUNT;
             return;
         }
         else if (UidLen > 16 || (UidLen != (recvLen / 4 - 1))) {
+            hookReadyForControl = false;
             freezeit.logFmt("%s() 前台服务数据异常 UidLen[%d] recvLen[%d]", __FUNCTION__, UidLen, recvLen);
             freezeit.logFmt("DumpHex: %s", Utils::bin2Hex(buff, recvLen < 64 * 4 ? recvLen : 64 * 4).c_str());
             END_TIME_COUNT;
             return;
         }
 
+        hookReadyForControl = true;
         curForegroundApp.clear();
         for (int i = 1; i <= UidLen; i++) {
             int& uid = buff[i];
@@ -1470,6 +1537,7 @@ public:
                             freezeit.logFmt("撤消冻结：解冻恢复Binder发生错误：[%s:%u] ErrorCode:%d", appInfo.label.c_str(), binderInfo.pid, errorCode);
                         }
                     }
+                    freezeit.logFmt("Freeze aborted [%s:%d]: Binder freeze failed; app left usable", appInfo.label.c_str(), appInfo.pids[i]);
                     return -appInfo.pids[i];
                 }
             }
@@ -1496,6 +1564,7 @@ public:
                             freezeit.logFmt("撤消冻结：解冻恢复Binder发生错误：[%s:%u] ErrorCode:%d", appInfo.label.c_str(), binderInfo.pid, errorCode);
                         }
                     }
+                    freezeit.logFmt("Freeze aborted [%s:%d]: pending Binder transaction; app restored before retry", appInfo.label.c_str(), appInfo.pids[i]);
                     return -appInfo.pids[i];
                 }
             }
