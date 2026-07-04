@@ -10,11 +10,19 @@ fi
 [ "$API" -ge 31 ] || abort "- 🚫 安装失败，仅支持 安卓12 或以上"
 
 if [ "$ARCH" == "arm64" ];then
-    mv "$MODPATH"/freezeitARM64 "$MODPATH"/freezeit
-    rm "$MODPATH"/freezeitX64
+    if [ -f "$MODPATH"/freezeitRustARM64 ]; then
+        mv "$MODPATH"/freezeitRustARM64 "$MODPATH"/freezeit
+    else
+        mv "$MODPATH"/freezeitARM64 "$MODPATH"/freezeit
+    fi
+    rm -f "$MODPATH"/freezeitX64 "$MODPATH"/freezeitRustX64
 elif [ "$ARCH" == "x64" ];then
-    mv "$MODPATH"/freezeitX64 "$MODPATH"/freezeit
-    rm "$MODPATH"/freezeitARM64
+    if [ -f "$MODPATH"/freezeitRustX64 ]; then
+        mv "$MODPATH"/freezeitRustX64 "$MODPATH"/freezeit
+    else
+        mv "$MODPATH"/freezeitX64 "$MODPATH"/freezeit
+    fi
+    rm -f "$MODPATH"/freezeitARM64 "$MODPATH"/freezeitRustARM64
 else
     abort "- 🚫 安装失败，仅支持ARM64或X64, 不支持当前架构: $ARCH"
 fi

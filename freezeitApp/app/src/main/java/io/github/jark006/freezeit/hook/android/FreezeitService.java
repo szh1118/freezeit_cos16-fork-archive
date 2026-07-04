@@ -144,6 +144,9 @@ public class FreezeitService {
         final int SET_WAKEUP_LOCK = baseCode + 21; // 设置唤醒锁权限
         final int BREAK_NETWORK = baseCode + 41;
         final int UPDATE_PENDING = baseCode + 60;   // 更新待冻结应用
+        final int GET_HOOK_HEALTH = baseCode + 70;
+        final int GET_RUNTIME_APP_STATES = baseCode + 71;
+        final int GET_SYSTEM_FREEZER_HINTS = baseCode + 72;
 
         // 有效命令集
         final Set<Integer> requestCodeSet = Set.of(
@@ -153,7 +156,10 @@ public class FreezeitService {
                 SET_CONFIG,
                 SET_WAKEUP_LOCK,
                 BREAK_NETWORK,
-                UPDATE_PENDING
+                UPDATE_PENDING,
+                GET_HOOK_HEALTH,
+                GET_RUNTIME_APP_STATES,
+                GET_SYSTEM_FREEZER_HINTS
         );
 
         byte[] buff = new byte[128 * 1024];// 128 KiB
@@ -259,6 +265,15 @@ public class FreezeitService {
                     case UPDATE_PENDING:
                         handlePendingApp(os, buff, payloadLen);
                         break;
+                    case GET_HOOK_HEALTH:
+                        handleHookHealth(os);
+                        break;
+                    case GET_RUNTIME_APP_STATES:
+                        handleRuntimeAppStates(os);
+                        break;
+                    case GET_SYSTEM_FREEZER_HINTS:
+                        handleSystemFreezerHints(os);
+                        break;
                     default:
                         log(TAG, "请求码功能暂未实现TODO: " + requestCode);
                         break;
@@ -334,6 +349,50 @@ public class FreezeitService {
 
         void handleXpLog(OutputStream os) throws IOException {
             os.write(XpUtils.xpLogContent.toString().getBytes());
+            os.close();
+        }
+
+        void handleHookHealth(OutputStream os) throws IOException {
+            boolean systemServerReady = mLruProcesses != null;
+            boolean screenReady = mPowerState != null;
+            boolean wakeLockReady = setUidModeMethod != null && appOpsService != null;
+            boolean networkReady = mNetdService != null && UidRangeParcelClazz != null;
+            boolean configReady = config != null && config.isCurProcStateInitialized();
+            String status = systemServerReady && configReady ? "active" : "degraded";
+
+            String json = "{"
+                    + "\"status\":\"" + status + "\","
+                    + "\"system_server_ready\":" + systemServerReady + ","
+                    + "\"config_ready\":" + configReady + ","
+                    + "\"screen_ready\":" + screenReady + ","
+                    + "\"wakelock_ready\":" + wakeLockReady + ","
+                    + "\"network_ready\":" + networkReady
+                    + "}";
+
+            os.write(json.getBytes());
+            os.close();
+        }
+
+        void handleRuntimeAppStates(OutputStream os) throws IOException {
+            String json = "{"
+                    + "\"foreground_count\":" + config.foregroundUid.size() + ","
+                    + "\"pending_count\":" + config.pendingUid.size() + ","
+                    + "\"managed_count\":" + config.managedApp.size() + ","
+                    + "\"cached_available\":" + (mLruProcesses != null)
+                    + "}";
+            os.write(json.getBytes());
+            os.close();
+        }
+
+        void handleSystemFreezerHints(OutputStream os) throws IOException {
+            boolean hookReady = mLruProcesses != null && config.isCurProcStateInitialized();
+            String hint = hookReady ? "safe_control_possible" : "postpone";
+            String json = "{"
+                    + "\"hint\":\"" + hint + "\","
+                    + "\"screen_ready\":" + (mPowerState != null) + ","
+                    + "\"hook_ready\":" + hookReady
+                    + "}";
+            os.write(json.getBytes());
             os.close();
         }
 

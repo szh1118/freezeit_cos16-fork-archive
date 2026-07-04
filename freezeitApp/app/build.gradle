@@ -34,8 +34,8 @@ android {
         applicationId "io.github.jark006.freezeit"
         minSdk 31
         targetSdk 34
-        versionCode 301000
-        versionName "3.1.0Alpha"
+        versionCode 302000
+        versionName "3.2.0SelfUse"
 
         resValue "string", "versionName", "${versionName}"
         signingConfig signingConfigs.release

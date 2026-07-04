@@ -1,0 +1,79 @@
+[package]
+name = "freezeit-daemon"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+
+[lib]
+name = "freezeit_daemon"
+path = "src/lib.rs"
+
+[[bin]]
+name = "freezeit"
+path = "src/main.rs"
+
+[[test]]
+name = "manager_v1_frame"
+path = "tests/contract/manager_v1_frame.rs"
+
+[[test]]
+name = "xposed_bridge_frame"
+path = "tests/contract/xposed_bridge_frame.rs"
+
+[[test]]
+name = "manager_health_v1"
+path = "tests/contract/manager_health_v1.rs"
+
+[[test]]
+name = "policy_loading"
+path = "tests/contract/policy_loading.rs"
+
+[[test]]
+name = "freezer_backend_decisions"
+path = "tests/contract/freezer_backend_decisions.rs"
+
+[[test]]
+name = "freeze_unfreeze_state"
+path = "tests/integration/freeze_unfreeze_state.rs"
+
+[[test]]
+name = "sys_freezer_primitives"
+path = "tests/contract/sys_freezer_primitives.rs"
+
+[[test]]
+name = "procfs_runtime_discovery"
+path = "tests/contract/procfs_runtime_discovery.rs"
+
+[[test]]
+name = "policy_migration"
+path = "tests/contract/policy_migration.rs"
+
+[[test]]
+name = "protected_classification"
+path = "tests/contract/protected_classification.rs"
+
+[[test]]
+name = "uid_reconciliation"
+path = "tests/contract/uid_reconciliation.rs"
+
+[[test]]
+name = "foreground_classification"
+path = "tests/contract/foreground_classification.rs"
+
+[[test]]
+name = "operation_log_json"
+path = "tests/contract/operation_log_json.rs"
+
+[[test]]
+name = "recover_after_restart"
+path = "tests/integration/recover_after_restart.rs"
+
+[[test]]
+name = "compatibility_baseline"
+path = "tests/contract/compatibility_baseline.rs"
+
+[dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3"

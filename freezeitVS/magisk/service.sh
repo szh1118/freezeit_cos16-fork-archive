@@ -56,6 +56,11 @@ if [ -f "$baseline" ]; then
     fi
 fi
 
+if [ ! -x "$MODDIR"/freezeit ]; then
+    echo "[$(date "+%Y-%m-%d %H:%M:%S")] 冻它 daemon binary missing or not executable" >>"$bootLogPath"
+    exit 1
+fi
+
 # 带一个任意参数将开启文件式日志 [ /sdcard/Android/freezeit.log ]
 # "$MODDIR"/freezeit 0
-"$MODDIR"/freezeit
+exec "$MODDIR"/freezeit

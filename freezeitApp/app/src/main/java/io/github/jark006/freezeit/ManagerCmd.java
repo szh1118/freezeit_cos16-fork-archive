@@ -21,4 +21,9 @@ public class ManagerCmd {
     // 其他命令 无附加数据 No additional data required
     public final static byte clearLog = 61;         // return string: "log" //清理日志
     public final static byte printFreezerProc = 62; // return string: "log" //打印冻结状态进程并返回log
+    public final static byte getHealthReport = 71;
+    public final static byte getCapabilityReport = 72;
+    public final static byte getCompatibilityBaseline = 73;
+    public final static byte getOperationLogJson = 74;
+    public final static byte runSelfCheck = 75;
 }

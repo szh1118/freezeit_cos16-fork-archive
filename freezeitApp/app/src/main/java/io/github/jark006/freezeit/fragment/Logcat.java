@@ -134,6 +134,7 @@ public class Logcat extends Fragment {
     }
 
     void resetTimer() {
+        lastLogLen = 0;
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

@@ -1,9 +1,37 @@
-.vs
-ARM64
-X64
+# Local agent/editor state
+.codex/
+
+# Build outputs
+**/target/
+freezeitApp/.gradle/
+freezeitApp/build/
+freezeitApp/app/build/
 .gradle/
+
+# IDE/local machine files
 .idea/
+*.iml
 local.properties
-**/build/
+.DS_Store
+
+# Signing keys and local secrets
 *.jks
-freezeitapp_key_about.txt
+*key_about*.txt
+
+# Generated/reverse-engineering workspaces
+apktool_mcp_server_workspace/
+specs/**/validation/rom-extract/
+specs/**/validation/tmp/
+
+# Release artifacts: keep source, scripts, metadata, and any already tracked
+# release archive from the remote baseline; do not auto-add newly generated zips.
+freezeitRelease/*.zip
+freezeitRelease/*.tar.gz
+
+# Magisk package staging binaries are produced by build scripts.
+freezeitVS/magisk/freezeit*
+freezeitVS/.gitignore.legacy-source
+
+# codebase-memory source artifact is tracked, but raw DBs are local.
+.codebase-memory/*.db
+.codebase-memory/*.db-*

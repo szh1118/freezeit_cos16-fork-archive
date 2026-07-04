@@ -246,8 +246,11 @@
 
                         <TextView
                             android:id="@+id/kernel_ver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ellipsize="end"
+                            android:gravity="end"
                             android:paddingHorizontal="10dp"
                             android:singleLine="true"
                             android:text="@string/unknown"
@@ -269,8 +272,11 @@
 
                         <TextView
                             android:id="@+id/android_ver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ellipsize="end"
+                            android:gravity="end"
                             android:paddingHorizontal="10dp"
                             android:singleLine="true"
                             android:text="@string/unknown"
@@ -293,8 +299,11 @@
 
                         <TextView
                             android:id="@+id/module_env"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ellipsize="end"
+                            android:gravity="end"
                             android:paddingHorizontal="10dp"
                             android:singleLine="true"
                             android:text="@string/unknown"
@@ -316,8 +325,11 @@
 
                         <TextView
                             android:id="@+id/module_ver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ellipsize="end"
+                            android:gravity="end"
                             android:paddingHorizontal="10dp"
                             android:singleLine="true"
                             android:text="@string/unknown"
@@ -339,8 +351,11 @@
 
                         <TextView
                             android:id="@+id/manager_ver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ellipsize="end"
+                            android:gravity="end"
                             android:paddingHorizontal="10dp"
                             android:singleLine="true"
                             android:text="@string/unknown"
