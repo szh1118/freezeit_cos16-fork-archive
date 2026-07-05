@@ -1,30 +1,26 @@
 # Freezeit self-use release workspace
 
-This directory stores legacy release artifacts plus modern rewrite test zips for
-the verified CPH2653 Android 16 self-use target. Public compatibility is not
-claimed by the modern rewrite until the release validation and 24-hour soak
-tasks are checked in `specs/002-modern-freezer-rewrite/tasks.md`.
+This directory stores self-use Magisk release artifacts for the verified
+CPH2653 Android 16 target.
 
-Use `scripts/package-release.sh` from the repository root after producing the
-Rust daemon and manager APK artifacts. Validate any candidate zip with
-`scripts/validate-release-zip.sh`.
+The current `3.2.xSelfUse` zips package the legacy native daemon from
+`freezeitVS/magisk/freezeitARM64` through `freezeitVS/build_pack_linux.sh`.
+`freezeitDaemon/` remains a modern rewrite workspace and is not the default
+phone payload unless a candidate zip explicitly contains `freezeitRustARM64`
+and target-device validation says so.
 
-## Current Modern Rewrite Artifacts
+Validate any candidate zip with `scripts/validate-release-zip.sh`.
+
+## Current Self-Use Release Artifact
 
 - Release candidate zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.4SelfUse_302004.zip`
-- Source archive:
-  `freezeitRelease/freezeit_3.2.0SelfUse_source.tar.gz`
-- Build evidence:
-  `specs/002-modern-freezer-rewrite/evidence/final-build.md`
-
-These artifacts are not final release-complete until the unchecked target-device
-validation, release validation, aggregate review/convergence, and 24-hour soak
-tasks are complete.
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.5SelfUse_302005.zip`
+- Build path: `freezeitVS/build_pack_linux.sh`
+- Validation path: `scripts/validate-release-zip.sh`
 
 ## Self-Use Threat Boundary
 
-`3.2.4SelfUse` is a background runtime-control build for the verified CPH2653
+`3.2.5SelfUse` is a background runtime-control build for the verified CPH2653
 Android 16 baseline. It can reduce selected third-party app background execution
 after hook/root/freezer readiness, foreground eligibility, configured delay, and
 idle checks pass.
@@ -32,8 +28,6 @@ idle checks pass.
 It is not a malware scanner, sandbox, exploit mitigator, or root/system trust
 boundary. It does not prevent behavior before freeze, foreground behavior while
 the app is being used, or activity from privileged ROM/root/system components.
-Binder freezer support is reported as `untested` until a safe target ioctl probe
-is implemented and validated.
 
 # ❌ 本项目已停止维护 ❌
 

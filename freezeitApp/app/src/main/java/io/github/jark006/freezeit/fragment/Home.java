@@ -51,9 +51,9 @@ public class Home extends Fragment implements View.OnClickListener {
     int[] realTimeInfo = new int[realTimeInfoIntLen]; //ARM64和X64  Native层均为小端
     byte[] realTimeRequest = new byte[12];
     int realTimeResponseLen = 0;
+    boolean hasHealthStatus = false;
     String daemonHealth = "Unknown";
     String hookHealth = "Unknown";
-    String diagnosticHealth = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -155,25 +155,12 @@ public class Home extends Fragment implements View.OnClickListener {
             StaticData.workMode = info.length > 7 ? info[7] : "Unknown";
             StaticData.androidVer = info.length > 8 ? info[8] : "Unknown";
             StaticData.kernelVer = info.length > 9 ? info[9] : "Unknown";
-            daemonHealth = info.length > 11 ? info[11] : "Unknown";
+            hasHealthStatus = info.length > 11;
+            daemonHealth = hasHealthStatus ? info[11] : "Unknown";
             hookHealth = info.length > 12 ? info[12] : "Unknown";
-            int diagnosticLen = Utils.freezeitTask(ManagerCmd.getHealthReport, null);
-            diagnosticHealth = diagnosticLen > 0 ?
-                    formatDiagnosticHealth(new String(StaticData.response, 0, diagnosticLen)) : "";
             StaticData.hasGetPropInfo = true;
             handler.sendEmptyMessage(HAS_MODULE_INFO);
         }).start();
-    }
-
-    String formatDiagnosticHealth(String rawDiagnostic) {
-        if (rawDiagnostic == null)
-            return "";
-
-        String diagnostic = rawDiagnostic.trim();
-        if (diagnostic.isEmpty() || diagnostic.startsWith("{"))
-            return "";
-
-        return diagnostic;
     }
 
     void getOnlineInfoTask() {
@@ -308,14 +295,16 @@ public class Home extends Fragment implements View.OnClickListener {
                     binding.versionCard.setVisibility(View.VISIBLE);
 
                     boolean xposedState = isXposedActive();
-                    boolean daemonActive = "active".equalsIgnoreCase(daemonHealth);
-                    boolean hookActive = xposedState || "active".equalsIgnoreCase(hookHealth);
-                    boolean ready = daemonActive && hookActive;
-                    binding.stateLayout.setBackgroundResource(ready ? R.color.normal_green : R.color.warn_orange);
-                    String status = "Daemon " + daemonHealth + " / Hook " + hookHealth;
-                    if (!diagnosticHealth.isEmpty())
-                        status = status + "\n" + diagnosticHealth;
-                    binding.statusText.setText(status);
+                    if (hasHealthStatus) {
+                        boolean daemonActive = "active".equalsIgnoreCase(daemonHealth);
+                        boolean hookActive = xposedState || "active".equalsIgnoreCase(hookHealth);
+                        boolean ready = daemonActive && hookActive;
+                        binding.stateLayout.setBackgroundResource(ready ? R.color.normal_green : R.color.warn_orange);
+                        binding.statusText.setText("Daemon " + daemonHealth + " / Hook " + hookHealth);
+                    } else {
+                        binding.stateLayout.setBackgroundResource(xposedState ? R.color.normal_green : R.color.warn_orange);
+                        binding.statusText.setText(xposedState ? StaticData.workMode : "Xposed " + getString(R.string.xposed_warn));
+                    }
 
                     binding.moduleEnv.setText(StaticData.moduleEnv);
                     binding.moduleVer.setText(StaticData.moduleVersion + " (" + StaticData.moduleVersionCode + ")");

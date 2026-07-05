@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -152,6 +153,19 @@ public class Logcat extends Fragment {
         handler.sendEmptyMessage(NEW_LOG_CONTENT);
     }
 
+    void scrollLogToBottom() {
+        if (binding == null)
+            return;
+
+        Layout layout = binding.logView.getLayout();
+        if (layout != null) {
+            int scrollAmount = layout.getLineTop(binding.logView.getLineCount()) - binding.logView.getHeight();
+            binding.logView.scrollTo(0, Math.max(scrollAmount, 0));
+        }
+        binding.forBottom.requestFocus();
+        binding.forBottom.clearFocus();
+    }
+
     private final Handler handler = new Handler(Looper.getMainLooper()) {
         @SuppressLint("SetTextI18n")
         @Override
@@ -163,8 +177,7 @@ public class Logcat extends Fragment {
             switch (msg.what) {
                 case NEW_LOG_CONTENT:
                     binding.logView.setText(new String(StaticData.response, 0, lastLogLen));
-                    var logScroll = binding.logScroll;
-                    logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
+                    binding.logView.post(Logcat.this::scrollLogToBottom);
                     break;
 
                 case UPDATE_LABEL_SUCCESS:

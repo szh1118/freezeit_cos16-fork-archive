@@ -11,12 +11,18 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Current Self-Use Release
 
-- Module version: `3.2.4SelfUse` / versionCode `302004`
+- Module version: `3.2.5SelfUse` / versionCode `302005`
 - Release zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.4SelfUse_302004.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.5SelfUse_302005.zip`
 - Target device: OnePlus 13 / CPH2653 / CPH2653EEA
 - Target system: ColorOS 16 / Android 16
 - Root/Xposed: Magisk or KernelSU with LSPosed IT v2.1.0-it / Modern Xposed API 102
+
+## 3.2.5SelfUse Changes
+
+- Manager home status no longer calls the unsupported legacy daemon health command, fixing the visible `非法命令` regression.
+- Manager log view restores the bottom sentinel focus path so new log output stays scrolled to the bottom.
+- Release notes now document the actual legacy native daemon packaging path for the self-use zip.
 
 ## 3.2.4SelfUse Changes
 
@@ -52,7 +58,7 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Install
 
-1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.4SelfUse_302004.zip` in Magisk.
+1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.5SelfUse_302005.zip` in Magisk.
 2. Enable the Freezeit module in LSPosed.
 3. Select at least these LSPosed scopes:
    - System framework / `system`

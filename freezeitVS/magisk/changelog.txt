@@ -1,3 +1,9 @@
+### v3.2.5SelfUse validation notes 2026-07-06
+1. Fixed manager home status calling an unsupported legacy daemon health command and surfacing an illegal-command response.
+2. Restored manager log bottom-sentinel focusing so new logs stay visible at the bottom.
+3. Clarified release documentation to match the actual legacy native daemon package path.
+4. No compatibility promise is made for other ROMs, devices, Android versions, or public release channels.
+
 ### v3.2.4SelfUse validation notes 2026-07-05
 1. Fixed abnormal-thaw recovery leaving audited apps in temporary foreground state when no foreground refresh follows.
 2. Runnable background apps found by the audit are directly requeued into the pending freeze list.

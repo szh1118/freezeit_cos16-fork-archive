@@ -393,13 +393,19 @@ fn startup_state_loads_legacy_module_files() {
 }
 
 #[test]
-fn home_status_card_does_not_render_raw_health_json() {
+fn home_status_card_does_not_call_unsupported_legacy_health_command() {
     let home = include_str!(
         "../../../freezeitApp/app/src/main/java/io/github/jark006/freezeit/fragment/Home.java"
     );
 
-    assert!(!home.contains("status += \"\\n\" + diagnosticHealth"));
-    assert!(home.contains("formatDiagnosticHealth"));
+    assert!(
+        !home.contains("Utils.freezeitTask(ManagerCmd.getHealthReport"),
+        "legacy self-use releases ship the C++ daemon, which does not implement command 71"
+    );
+    assert!(
+        home.contains("hasHealthStatus") && home.contains("StaticData.workMode"),
+        "home status must keep a legacy fallback when getPropInfo has no daemon health fields"
+    );
 }
 
 #[test]
@@ -418,6 +424,9 @@ fn home_version_values_are_width_constrained() {
 #[test]
 fn logcat_display_scroll_area_fills_viewport() {
     let layout = include_str!("../../../freezeitApp/app/src/main/res/layout/fragment_logcat.xml");
+    let logcat = include_str!(
+        "../../../freezeitApp/app/src/main/java/io/github/jark006/freezeit/fragment/Logcat.java"
+    );
 
     assert!(
         layout.contains("android:fillViewport=\"true\""),
@@ -426,6 +435,15 @@ fn logcat_display_scroll_area_fills_viewport() {
     assert!(
         layout.contains("android:paddingBottom=\"@dimen/fab_margin\""),
         "log page needs bottom padding so floating action buttons do not cover tail logs"
+    );
+    assert!(
+        logcat.contains("scrollLogToBottom")
+            && logcat.contains("binding.logView.scrollTo(0, Math.max(scrollAmount, 0))"),
+        "log page must scroll the TextView itself because ScrollingMovementMethod owns log scrolling"
+    );
+    assert!(
+        !logcat.contains("fullScroll(View.FOCUS_DOWN)"),
+        "outer ScrollView fullScroll does not reach the TextView's internal scroll position"
     );
 }
 
