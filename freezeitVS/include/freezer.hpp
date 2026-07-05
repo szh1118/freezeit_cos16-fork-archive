@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils.hpp"
+#include "downloadDeferral.hpp"
 #include "vpopen.hpp"
 #include "managedApp.hpp"
 #include "doze.hpp"
@@ -42,6 +43,7 @@ private:
     mutex naughtyMutex;
     bool hookReadyForControl = false;
     uint32_t hookNotReadyLogCountdown = 0;
+    DownloadFreezeDeferral downloadFreezeDeferral;
 
     uint32_t timelineIdx = 0;
     uint32_t unfrozenTimeline[4096] = {};
@@ -57,7 +59,12 @@ private:
     int remainTimesToRefreshTopApp = 2; //允许多线程冲突，不需要原子操作
 
     static const size_t GET_VISIBLE_BUF_SIZE = 256 * 1024;
+    static const size_t NETSTATS_DUMPSYS_BUF_SIZE = 128 * 1024;
     unique_ptr<char[]> getVisibleAppBuff;
+    unique_ptr<char[]> netstatsDumpsysBuff;
+    map<int, uint64_t> uidRxBytesCache;
+    time_t uidRxBytesCacheAt = 0;
+    bool uidRxBytesCacheLoaded = false;
 
     binder_state bs{ -1, nullptr, 128 * 1024ULL };
 
@@ -97,6 +104,7 @@ public:
         settings(settings), doze(doze) {
 
         getVisibleAppBuff = make_unique<char[]>(GET_VISIBLE_BUF_SIZE);
+        netstatsDumpsysBuff = make_unique<char[]>(NETSTATS_DUMPSYS_BUF_SIZE);
 
         binderInit("/dev/binder");
 
@@ -1068,6 +1076,7 @@ public:
         for (const int uid : newShowOnApp) {
             // 如果在待冻结列表则只需移除
             if (pendingHandleList.erase(uid)) {
+                downloadFreezeDeferral.clear(uid);
                 isupdate = true;
                 continue;
             }
@@ -1084,6 +1093,7 @@ public:
         for (const int uid : toBackgroundApp) { // 更新倒计时
             isupdate = true;
             managedApp[uid].delayCnt = 0;
+            downloadFreezeDeferral.clear(uid);
             pendingHandleList[uid] = managedApp[uid].isTerminateMode() ?
                 settings.terminateTimeout : settings.freezeTimeout;
         }
@@ -1099,21 +1109,29 @@ public:
         auto it = pendingHandleList.begin();
         while (it != pendingHandleList.end()) {
             auto& remainSec = it->second;
+            const int uid = it->first;
+            auto& appInfo = managedApp[uid];
+
             if (--remainSec > 0) {//每次轮询减一
+                if (remainSec == DownloadFreezeDeferral::MEASUREMENT_INTERVAL_SECONDS)
+                    primeDownloadFreezeSample(appInfo, time(nullptr));
                 it++;
                 continue;
             }
 
-            const int uid = it->first;
-            auto& appInfo = managedApp[uid];
-
             if (appInfo.isWhitelist()) { // 刚切换成白名单的
+                downloadFreezeDeferral.clear(uid);
                 it = pendingHandleList.erase(it);
                 continue;
             }
 
             if (!isHookReadyForControl()) {
                 remainSec = 15;
+                it++;
+                continue;
+            }
+
+            if (shouldDelayFreezeForDownload(appInfo, remainSec)) {
                 it++;
                 continue;
             }
@@ -1134,6 +1152,7 @@ public:
                     continue;
                 }
             }
+            downloadFreezeDeferral.clear(uid);
             it = pendingHandleList.erase(it);
             appInfo.delayCnt = 0;
 
@@ -1367,6 +1386,84 @@ public:
             return "自由后台(内置)";
         default:
             return "未知";
+        }
+    }
+
+    bool refreshUidRxBytesCache(const time_t now) {
+        if (uidRxBytesCacheAt == now)
+            return uidRxBytesCacheLoaded;
+
+        uidRxBytesCache.clear();
+        uidRxBytesCacheAt = now;
+        uidRxBytesCacheLoaded = false;
+
+        const size_t readLen = Utils::popenRead(
+            DownloadFreezeDeferral::UID_RX_BYTES_DUMPSYS_COMMAND,
+            netstatsDumpsysBuff.get(), NETSTATS_DUMPSYS_BUF_SIZE - 1);
+        if (readLen == 0)
+            return false;
+
+        netstatsDumpsysBuff[readLen] = 0;
+
+        uidRxBytesCacheLoaded = DownloadFreezeDeferral::parseUidRxBytesMap(
+            string_view(netstatsDumpsysBuff.get(), readLen), uidRxBytesCache);
+        return uidRxBytesCacheLoaded;
+    }
+
+    bool readUidRxBytes(const int uid, uint64_t& rxBytes, const time_t now) {
+        if (!refreshUidRxBytesCache(now))
+            return false;
+
+        const auto it = uidRxBytesCache.find(uid);
+        if (it == uidRxBytesCache.end())
+            return false;
+
+        rxBytes = it->second;
+        return true;
+    }
+
+    void primeDownloadFreezeSample(const appInfoStruct& appInfo, const time_t now) {
+        if (!DownloadFreezeDeferral::isCandidatePackage(appInfo.package))
+            return;
+
+        uint64_t rxBytes = 0;
+        if (readUidRxBytes(appInfo.uid, rxBytes, now))
+            downloadFreezeDeferral.primeSample(appInfo.uid, appInfo.package, rxBytes, now);
+    }
+
+    bool shouldDelayFreezeForDownload(appInfoStruct& appInfo, int& remainSec) {
+        if (!DownloadFreezeDeferral::isCandidatePackage(appInfo.package))
+            return false;
+
+        const time_t now = time(nullptr);
+        uint64_t rxBytes = 0;
+        if (!readUidRxBytes(appInfo.uid, rxBytes, now))
+            return false;
+
+        const auto decision = downloadFreezeDeferral.evaluate(appInfo.uid, appInfo.package,
+            rxBytes, now);
+        switch (decision.action) {
+        case DownloadDeferralAction::WaitForSample:
+            remainSec = DownloadFreezeDeferral::MEASUREMENT_INTERVAL_SECONDS;
+            freezeit.logFmt("%s 下载测速样本不足, %d秒后再判断是否冻结",
+                appInfo.label.c_str(), remainSec);
+            return true;
+
+        case DownloadDeferralAction::Defer: {
+            remainSec = DownloadFreezeDeferral::RETRY_DELAY_SECONDS;
+            const auto speedHundredMiB =
+                decision.bytesPerSecond * 100ULL / (1024ULL * 1024ULL);
+            freezeit.logFmt("%s 下载速度 %llu.%02llu MiB/s, 延迟%d秒冻结",
+                appInfo.label.c_str(),
+                static_cast<unsigned long long>(speedHundredMiB / 100ULL),
+                static_cast<unsigned long long>(speedHundredMiB % 100ULL),
+                remainSec);
+            return true;
+        }
+
+        case DownloadDeferralAction::Proceed:
+        default:
+            return false;
         }
     }
 

@@ -1,3 +1,9 @@
+### v3.2.6SelfUse validation notes 2026-07-06
+1. Delays freezing matching cloud drive / NAS clients while UID receive speed is above 5 MiB/s.
+2. Covered package patterns: baidu.netdisk, quark.clouddrive, com.google.android.apps.docs, pikpak, and com.trim.app.
+3. Android 16 UID receive bytes are extracted from the exact netstats mAppUidStatsMap table, ignoring status rows, with a regression test for realistic data.
+4. No compatibility promise is made for other ROMs, devices, Android versions, or public release channels.
+
 ### v3.2.5SelfUse validation notes 2026-07-06
 1. Fixed manager home status calling an unsupported legacy daemon health command and surfacing an illegal-command response.
 2. Restored manager log bottom-sentinel focusing so new logs stay visible at the bottom.

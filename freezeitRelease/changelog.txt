@@ -1,3 +1,10 @@
+### v3.2.6SelfUse validation notes 2026-07-06
+1. Self-use package target: OnePlus 13 Android 16 with existing Magisk module version 3.2.5SelfUse.
+2. Includes the updated manager APK, ARM64 legacy native service, Magisk scripts, config seeds, and rom_baseline.prop.
+3. Cloud drive / NAS clients matching baidu.netdisk, quark.clouddrive, com.google.android.apps.docs, pikpak, or com.trim.app are delayed from freezing while UID receive speed is above 5 MiB/s.
+4. Netstats extraction ignores Android status rows and parser behavior is covered with a realistic mAppUidStatsMap sample.
+5. No compatibility promise is made for other ROMs, devices, Android versions, or public release channels.
+
 ### v3.2.5SelfUse validation notes 2026-07-06
 1. Self-use package target: OnePlus 13 Android 16 with existing Magisk module version 3.2.4SelfUse.
 2. Includes the updated manager APK, ARM64 legacy native service, Magisk scripts, config seeds, and rom_baseline.prop.

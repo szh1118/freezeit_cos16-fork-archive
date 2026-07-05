@@ -11,12 +11,17 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Current Self-Use Release
 
-- Module version: `3.2.5SelfUse` / versionCode `302005`
+- Module version: `3.2.6SelfUse` / versionCode `302006`
 - Release zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.5SelfUse_302005.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.6SelfUse_302006.zip`
 - Target device: OnePlus 13 / CPH2653 / CPH2653EEA
 - Target system: ColorOS 16 / Android 16
 - Root/Xposed: Magisk or KernelSU with LSPosed IT v2.1.0-it / Modern Xposed API 102
+
+## 3.2.6SelfUse Changes
+
+- Cloud drive / NAS clients matching `baidu.netdisk`, `quark.clouddrive`, `com.google.android.apps.docs`, `pikpak`, or `com.trim.app` stay pending instead of freezing while UID receive speed is above 5 MiB/s.
+- Android 16 netstats extraction now ignores status rows and has a regression test using a realistic `mAppUidStatsMap` sample.
 
 ## 3.2.5SelfUse Changes
 
@@ -58,7 +63,7 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Install
 
-1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.5SelfUse_302005.zip` in Magisk.
+1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.6SelfUse_302006.zip` in Magisk.
 2. Enable the Freezeit module in LSPosed.
 3. Select at least these LSPosed scopes:
    - System framework / `system`
