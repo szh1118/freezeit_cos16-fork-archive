@@ -249,7 +249,7 @@ public:
                 minfree, sizeof(minfree)))
                 freezeit.log("调整lmk参数: 设置 minfree 失败");
         }
-        if (freezeit.moduleEnv == "Magisk") {
+        if (freezeit.moduleEnv.starts_with("Magisk")) {
             string cmd;
             for (int i = 0; i < len; i += 2)
                 cmd += string("magisk resetprop ") + lmkdParameter[i] + " " + lmkdParameter[i + 1] + ";";
@@ -257,7 +257,7 @@ public:
             system(cmd.c_str());
             freezeit.log("更新参数 LMK");
         }
-        else if (freezeit.moduleEnv == "KernelSU") {
+        else if (freezeit.moduleEnv.starts_with("KernelSU")) {
             if (!access("/data/adb/ksu/resetprop", F_OK)) {
                 string cmd;
                 for (int i = 0; i < len; i += 2)

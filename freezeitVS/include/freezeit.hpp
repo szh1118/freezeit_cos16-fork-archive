@@ -159,12 +159,13 @@ public:
         modulePath = Utils::parentDir(fullPath);
 
         int versionCode = -1;
-        if (!access("/system/bin/magisk", F_OK)) {
+        const char* magiskPath = MAGISK::get_binary_path();
+        if (magiskPath) {
             moduleEnv = "Magisk";
-            versionCode = MAGISK::get_version_code();
+            versionCode = MAGISK::get_version_code(magiskPath);
             if (versionCode <= 0) {
                 sleep(2);
-                versionCode = MAGISK::get_version_code();
+                versionCode = MAGISK::get_version_code(magiskPath);
             }
         }
         else if (!access("/data/adb/ksud", F_OK)) {

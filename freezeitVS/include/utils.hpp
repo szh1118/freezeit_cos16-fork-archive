@@ -686,9 +686,29 @@ namespace Utils {
 
 
 namespace MAGISK {
-    int get_version_code() {
+    const char* get_binary_path() {
+        static constexpr const char* paths[] = {
+            "/system/bin/magisk",
+            "/product/bin/magisk",
+            "/data/adb/magisk/magisk",
+            "/debug_ramdisk/magisk",
+            "/sbin/magisk",
+        };
+
+        for (const char* path : paths) {
+            if (!access(path, F_OK))
+                return path;
+        }
+        return nullptr;
+    }
+
+    int get_version_code(const char* magiskPath) {
+        if (!magiskPath)
+            return -1;
+
         char buff[32] = { 0 };
-        Utils::popenRead("/system/bin/magisk -V", buff, sizeof(buff));
+        string cmd = string(magiskPath) + " -V";
+        Utils::popenRead(cmd.c_str(), buff, sizeof(buff) - 1);
         return isdigit(buff[0]) ? atoi(buff) : -1;
     }
 }
