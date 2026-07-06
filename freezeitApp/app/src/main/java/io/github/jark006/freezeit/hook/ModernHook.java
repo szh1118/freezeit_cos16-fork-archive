@@ -8,7 +8,9 @@ public class ModernHook extends XposedModule {
     @Override
     public void onPackageReady(@NonNull PackageReadyParam param) {
         String packageName = param.getPackageName();
-        if (!Enum.Package.self.equals(packageName) && !Enum.Package.powerkeeper.equals(packageName)) {
+        if (!Enum.Package.self.equals(packageName)
+                && !Enum.Package.powerkeeper.equals(packageName)
+                && !Enum.Package.oplusAthena.equals(packageName)) {
             return;
         }
         ModernXposedBackend backend = new ModernXposedBackend(this);

@@ -1,3 +1,10 @@
+### v3.2.7SelfUse validation notes 2026-07-07
+1. Adds ColorOS Athena Xposed scope and hook dispatch for `com.oplus.athena`.
+2. Short-circuits Athena external clear strategies and shared kill/force-stop utility exits to reduce ColorOS versus Freezeit cleanup fights.
+3. Logs GuardElf power policy and whitelist switch changes for diagnostics without blocking Battery UI writes.
+4. Includes the updated manager APK, ARM64 native service, Magisk scripts, config seeds, rom_baseline.prop, and update.json.
+5. No compatibility promise is made for other ROMs, devices, Android versions, or public release channels.
+
 ### v3.2.6SelfUse validation notes 2026-07-06
 1. Self-use package target: OnePlus 13 Android 16 with existing Magisk module version 3.2.5SelfUse.
 2. Includes the updated manager APK, ARM64 legacy native service, Magisk scripts, config seeds, and rom_baseline.prop.

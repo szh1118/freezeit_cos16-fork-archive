@@ -3,6 +3,7 @@
     <array name="recommend_package">
         <item>system</item>
         <item>com.miui.powerkeeper</item>
+        <item>com.oplus.athena</item>
         <item>io.github.jark006.freezeit</item>
     </array>
 

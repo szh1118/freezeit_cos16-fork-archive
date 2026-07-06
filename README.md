@@ -11,12 +11,18 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Current Self-Use Release
 
-- Module version: `3.2.6SelfUse` / versionCode `302006`
+- Module version: `3.2.7SelfUse` / versionCode `302007`
 - Release zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.6SelfUse_302006.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip`
 - Target device: OnePlus 13 / CPH2653 / CPH2653EEA
 - Target system: ColorOS 16 / Android 16
 - Root/Xposed: Magisk or KernelSU with LSPosed IT v2.1.0-it / Modern Xposed API 102
+
+## 3.2.7SelfUse Changes
+
+- Adds ColorOS Athena conflict mitigation: `com.oplus.athena` is now in Xposed scope, and Athena external clear / kill / force-stop exits are short-circuited.
+- Logs GuardElf power-protection policy and whitelist switch changes so ColorOS policy writes are visible in Freezeit Xposed logs.
+- Keeps Battery UI policy writes unblocked; this release favors Freezeit only at Athena cleanup execution exits.
 
 ## 3.2.6SelfUse Changes
 
@@ -63,11 +69,12 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Install
 
-1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.6SelfUse_302006.zip` in Magisk.
+1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip` in Magisk.
 2. Enable the Freezeit module in LSPosed.
 3. Select at least these LSPosed scopes:
    - System framework / `system`
    - Freezeit manager / `io.github.jark006.freezeit`
+   - OPPO/ColorOS Athena / `com.oplus.athena`
 4. Reboot.
 
 ## Build And Validate

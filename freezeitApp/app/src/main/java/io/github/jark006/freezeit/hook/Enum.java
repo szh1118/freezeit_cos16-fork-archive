@@ -7,6 +7,7 @@ public class Enum {
     public final static class Package {
         public final static String self = BuildConfig.APPLICATION_ID;
         public final static String powerkeeper = "com.miui.powerkeeper";
+        public final static String oplusAthena = "com.oplus.athena";
         public final static String android = "android";
     }
 
@@ -69,6 +70,19 @@ public class Enum {
         public final static String ProcessManager = "miui.process.ProcessManager";
         public final static String ProcessConfig = "miui.process.ProcessConfig";
         public final static String ForceDozeController = "com.miui.powerkeeper.statemachine.ForceDozeController";
+
+        public final static String OplusForceStopStrategy = "com.oplus.athena.systemservice.action.prockill.clear.externalclear.ForceStopStrategy";
+        public final static String OplusKillPidStrategy = "com.oplus.athena.systemservice.action.prockill.clear.externalclear.KillPidStrategy";
+        public final static String OplusKillUidStrategy = "com.oplus.athena.systemservice.action.prockill.clear.externalclear.KillUidStrategy";
+        public final static String OplusForceStopOrKillStrategy = "com.oplus.athena.systemservice.action.prockill.clear.externalclear.c";
+        public final static String OplusClearUtils = "com.oplus.athena.systemservice.utils.s";
+        public final static String OplusClearActionBase = "n1.m";
+        public final static String OplusRemoteGuardElfServiceStub = "com.oplus.athena.client.action.oplusguardelf.RemoteGuardElfService$1";
+        public final static String OplusExternalClearW1 = "n1.w1";
+        public final static String OplusExternalClearO0 = "n1.o0";
+        public final static String OplusClearRecord = "com.oplus.app.athena.ClearRecord";
+        public final static String OplusKeepRecord = "com.oplus.app.athena.KeepRecord";
+
         public final static String RootTaskInfoS = "android.app.ActivityTaskManager$RootTaskInfo";
         public final static String StackInfo = "android.app.ActivityManager$StackInfo";
     }
@@ -112,6 +126,14 @@ public class Enum {
         public final static String removeWhiteListAppsIfEnterForceIdle = "removeWhiteListAppsIfEnterForceIdle";
         public final static String restoreWhiteListAppsIfQuitForceIdle = "restoreWhiteListAppsIfQuitForceIdle";
         public final static String initialize = "initialize";
+        public final static String oplusExternalClear = "a";
+        public final static String oplusForceStop = "b";
+        public final static String oplusForceStopWithFlag = "c";
+        public final static String oplusKill = "e";
+        public final static String oplusKillSimple = "d";
+        public final static String oplusClearActionKill = "h";
+        public final static String onPowerProtectPolicyChange = "onPowerProtectPolicyChange";
+        public final static String setGuardElfSwitch = "setGuardElfSwitch";
     }
 
     public final static class Field {

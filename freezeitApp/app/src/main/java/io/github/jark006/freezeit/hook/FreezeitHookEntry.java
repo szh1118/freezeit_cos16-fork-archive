@@ -8,6 +8,7 @@ import io.github.jark006.freezeit.hook.android.AnrHook;
 import io.github.jark006.freezeit.hook.android.BroadCastHook;
 import io.github.jark006.freezeit.hook.android.FreezeitService;
 import io.github.jark006.freezeit.hook.android.WakeLockHook;
+import io.github.jark006.freezeit.hook.app.OplusAthena;
 import io.github.jark006.freezeit.hook.app.PowerKeeper;
 
 public final class FreezeitHookEntry {
@@ -26,6 +27,9 @@ public final class FreezeitHookEntry {
                 return;
             case Enum.Package.powerkeeper:
                 PowerKeeper.Hook(classLoader);
+                return;
+            case Enum.Package.oplusAthena:
+                OplusAthena.Hook(classLoader);
                 return;
             default:
         }

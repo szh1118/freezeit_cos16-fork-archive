@@ -14,13 +14,13 @@ Validate any candidate zip with `scripts/validate-release-zip.sh`.
 ## Current Self-Use Release Artifact
 
 - Release candidate zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.6SelfUse_302006.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip`
 - Build path: `freezeitVS/build_pack_linux.sh`
 - Validation path: `scripts/validate-release-zip.sh`
 
 ## Self-Use Threat Boundary
 
-`3.2.6SelfUse` is a background runtime-control build for the verified CPH2653
+`3.2.7SelfUse` is a background runtime-control build for the verified CPH2653
 Android 16 baseline. It can reduce selected third-party app background execution
 after hook/root/freezer readiness, foreground eligibility, configured delay, and
 idle checks pass.

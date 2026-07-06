@@ -1,3 +1,8 @@
+### v3.2.7SelfUse 更新日志 2026-07-07
+- 增加 ColorOS Athena 互搏缓解：把 `com.oplus.athena` 加入 Xposed 作用域，短路 Athena external clear、kill、force-stop 出口。
+- 记录 GuardElf 电池保护策略和白名单开关变化，方便判断 ColorOS 是否仍在改后台策略。
+- 不阻断 Battery UI 的策略写入；本版只在 Athena 清理执行出口优先 Freezeit。
+
 ### v3.2.5SelfUse 更新日志 2026-07-06
 - 修复管理器主页向 legacy daemon 请求未实现健康命令，导致状态区域显示“非法命令”的回归。
 - 修复日志页不再自动滚动到最新日志底部的回归，恢复底部焦点哨兵滚动路径。
