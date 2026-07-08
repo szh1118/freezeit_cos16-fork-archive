@@ -10,15 +10,15 @@
     <string name="tg_https_link" translatable="false">https://t.me/+sjDX1oTk31ZmYjY1</string>
     <string name="tg_channel_link" translatable="false">tg://resolve?domain=freezeitRelease</string>
     <string name="tg_channel_https_link" translatable="false">https://t.me/freezeitRelease</string>
-    <string name="github_link" translatable="false">https://github.com/jark006</string>
-    <string name="github_project_link" translatable="false">https://github.com/jark006/freezeitVS</string>
-    <string name="github_app_link" translatable="false">https://github.com/jark006/freezeitapp</string>
+    <string name="github_link" translatable="false">https://github.com/szh1118</string>
+    <string name="github_project_link" translatable="false">https://github.com/szh1118/freezeit_cos16</string>
+    <string name="github_app_link" translatable="false">https://github.com/szh1118/freezeit_cos16/tree/main/freezeitApp</string>
     <string name="lanzou_link" translatable="false">https://jark006.lanzout.com/b017oz9if</string>
 
     <string name="privacy_content" translatable="false">
-        更新日期：2023/03/04
+        更新日期：2026/07/08
         \n\n导言
-        \n\n冻它 是一款由 JARK006 （以下简称“我们”）提供的在安卓平台实现部分墓碑机制的软件，以下协议是本软件相关的具体协议内容，如对本《隐私政策》或相关事宜有任何问题，请通过 jark006@qq.com 与我们联系。
+        \n\n冻它 是一款由 JARK006 原作、@szh1118 维护的在安卓平台实现部分墓碑机制的软件，以下协议是本软件相关的具体协议内容，如对本《隐私政策》或相关事宜有任何问题，请通过 https://github.com/szh1118/freezeit_cos16/issues 与我们联系。
 
         \n\n一、 我们收集的信息
         \n\n我们仅收集用户设备上的”应用列表及相关信息“、”实时进程信息“及“设备硬件相关信息”，这些信息全部保存再设备本地，不会以任何形式上传或转移到设备外部。也不会收集任何关于个人的隐私信息。
@@ -42,7 +42,7 @@
         \n2. 如遇本政策更新，新的政策信息将内置到新版应用，跟随应用一起发布。
 
         \n\n五、 如何联系我们
-        \n\n如果您对我们的应用权限和安全策略有任何顾虑和疑惑，可随时通过邮箱 jark006@qq.com 向我们反馈以及获得帮助。
+        \n\n如果您对我们的应用权限和安全策略有任何顾虑和疑惑，可通过 https://github.com/szh1118/freezeit_cos16/issues 反馈以及获得帮助。
     </string>
 
 
@@ -90,7 +90,7 @@
     <string name="freeze_mode_title">Freezer Type ⓘ</string>
     <string name="slowly_tips">Be Slowly</string>
     <string name="help">Help</string>
-    <string name="freezeit_tutorial_text">Freezeit Tutorial</string>
+    <string name="freezeit_tutorial_text">Release Notes</string>
     <string name="xposed_warn">Xposed inactive, stop working</string>
     <string name="freezeit_error_tips">
         1. It takes 1 minute to init after first unlock, please open it again later.
@@ -106,14 +106,14 @@
     <string name="lanzou_password">Lanzou Password: dy6i</string>
     <string name="donate_wechat">Donate Wechat</string>
     <string name="donate_alipay">Donate Alipay</string>
-    <string name="github_open_source">Manager OpenSource</string>
-    <string name="github_project">Project OpenSource</string>
+    <string name="github_open_source">Manager Source (@szh1118)</string>
+    <string name="github_project">Project Source (@szh1118)</string>
     <string name="doze_title">OffScreen Doze ⓘ</string>
     <string name="lmk_title">Adjust LMK Parameter ⓘ</string>
     <string name="current_title">Adjust Current ⓘ</string>
     <string name="double_cell_title">DoubleCell Battery ⓘ</string>
     <string name="battery_title">Battery Monitor ⓘ</string>
-    <string name="developer">Developer JARK006</string>
+    <string name="developer">Developer JARK006 / @szh1118</string>
     <string name="physical_ram_text">[RAM] Total: %1$.2f GiB\nUse: %2$.1f%% Remain: %3$.2f %4$s</string>
     <string name="virtual_ram_text">[SWAP] Total: %1$.2f GiB\nUse: %2$.1f%% Remain: %3$.2f %4$s</string>
     <string name="ext_memory">ExtMemory: %1$.2f GiB</string>
@@ -176,8 +176,8 @@
         \nIf the extended foreground is invalid, please check and turn off other "background protection" mechanisms that may conflict.
         \nIf the "frozen foreground" error persists, turn off this.</string>
 
-    <string name="website_link">https://jark006.github.io/i/freezeit/</string>
-    <string name="tutorial_link">https://jark006.github.io/FreezeitIntroduction/</string>
+    <string name="website_link">https://github.com/szh1118/freezeit_cos16</string>
+    <string name="tutorial_link">https://github.com/szh1118/freezeit_cos16/blob/main/README.md</string>
     <string name="update_json_link">https://raw.githubusercontent.com/szh1118/freezeit_cos16/main/freezeitRelease/update.json</string>
     <string name="online_changelog_link">https://raw.githubusercontent.com/szh1118/freezeit_cos16/main/freezeitRelease/changelogFull.txt</string>
     <string name="privacy_title">Privacy</string>
@@ -190,7 +190,7 @@
     <string name="managerVer">Manager Version</string>
     <string name="kernel_version">Kernel Version</string>
     <string name="android_version">Android Version</string>
-    <string name="freezeit_website">Website</string>
+    <string name="freezeit_website">GitHub Repository</string>
     <string name="set_background">Setting Background</string>
     <string name="appFailTips">Failed to get the application list, please grant the relevant permission</string>
     <string name="ok" translatable="false">OK</string>

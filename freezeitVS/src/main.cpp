@@ -1,4 +1,4 @@
-// Freezeit 冻它模块  By JARK006
+// Freezeit 冻它模块  By JARK006 / @szh1118
 
 #include "freezeit.hpp"
 #include "settings.hpp"
@@ -38,4 +38,3 @@ TODO
 5. 抖音短时间解冻后重载：上次正在看的视频没了
 6. 偶尔亮屏后，系统手势(返回，主页，最近任务)控制失灵，约3-5秒后恢复
 */
-

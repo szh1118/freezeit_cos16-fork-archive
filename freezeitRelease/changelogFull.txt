@@ -1,3 +1,8 @@
+### v3.2.8SelfUse 更新日志 2026-07-08
+- 修复 legacy `vpopen` 只读固定长度输出时会提前关闭管道的问题；现在会继续排空子进程 stdout，避免 `dumpsys telecom` 输出过大时触发 SIGPIPE/Broken pipe 并导致 native daemon 退出。
+- 模块和管理器作者信息更新为 `JARK006 / @szh1118`。
+- 管理器关于页和在线更新元数据改为指向当前维护 fork：`szh1118/freezeit_cos16`。
+
 ### v3.2.7SelfUse 更新日志 2026-07-07
 - 增加 ColorOS Athena 互搏缓解：把 `com.oplus.athena` 加入 Xposed 作用域，短路 Athena external clear、kill、force-stop 出口。
 - 记录 GuardElf 电池保护策略和白名单开关变化，方便判断 ColorOS 是否仍在改后台策略。

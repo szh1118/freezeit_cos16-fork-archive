@@ -1,3 +1,10 @@
+### v3.2.8SelfUse validation notes 2026-07-08
+1. Drains complete child stdout in legacy `vpopen` while preserving bounded response buffers, avoiding SIGPIPE/Broken pipe daemon exits on large `dumpsys telecom` output.
+2. Updates module and manager author metadata to `JARK006 / @szh1118`.
+3. Points visible manager About links and online update metadata at `szh1118/freezeit_cos16`.
+4. Includes the updated manager APK, ARM64 native service, Magisk scripts, config seeds, rom_baseline.prop, and update.json.
+5. No compatibility promise is made for other ROMs, devices, Android versions, or public release channels.
+
 ### v3.2.7SelfUse validation notes 2026-07-07
 1. Adds ColorOS Athena Xposed scope and hook dispatch for `com.oplus.athena`.
 2. Short-circuits Athena external clear strategies and shared kill/force-stop utility exits to reduce ColorOS versus Freezeit cleanup fights.

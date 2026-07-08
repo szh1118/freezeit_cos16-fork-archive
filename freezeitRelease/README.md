@@ -14,13 +14,13 @@ Validate any candidate zip with `scripts/validate-release-zip.sh`.
 ## Current Self-Use Release Artifact
 
 - Release candidate zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.8SelfUse_302008.zip`
 - Build path: `freezeitVS/build_pack_linux.sh`
 - Validation path: `scripts/validate-release-zip.sh`
 
 ## Self-Use Threat Boundary
 
-`3.2.7SelfUse` is a background runtime-control build for the verified CPH2653
+`3.2.8SelfUse` is a background runtime-control build for the verified CPH2653
 Android 16 baseline. It can reduce selected third-party app background execution
 after hook/root/freezer readiness, foreground eligibility, configured delay, and
 idle checks pass.
@@ -41,16 +41,14 @@ the app is being used, or activity from privileged ROM/root/system components.
 
 ### 相关链接
 
-1. [项目开源地址](https://github.com/jark006/freezeitVS)
+1. [当前自用维护地址](https://github.com/szh1118/freezeit_cos16)
 
-1. [管理器开源地址](https://github.com/jark006/freezeitapp)
+1. [管理器源码目录](https://github.com/szh1118/freezeit_cos16/tree/main/freezeitApp)
 
-1. [模块包发布地址](https://github.com/jark006/freezeitRelease)
+1. [模块包发布目录](https://github.com/szh1118/freezeit_cos16/tree/main/freezeitRelease)
 
 ### 其他链接
 
-[教程 Tutorials](https://jark006.github.io/FreezeitIntroduction/) |
-[酷安 @JARK006](https://www.coolapk.com/u/1212220) |
-[QQ频道 冻它模块](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1W6opB7&appChannel=share&businessType=9&from=246610&biz=ka) |
-[Telegram Group](https://t.me/+sjDX1oTk31ZmYjY1) |
-[蓝奏云 密码: dy6i](https://jark006.lanzout.com/b017oz9if) 
+[发布说明](https://github.com/szh1118/freezeit_cos16/blob/main/README.md) |
+[问题反馈](https://github.com/szh1118/freezeit_cos16/issues) |
+[更新元数据](https://github.com/szh1118/freezeit_cos16/blob/main/freezeitRelease/update.json)

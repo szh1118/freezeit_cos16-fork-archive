@@ -9,10 +9,10 @@
 
     <string name="xposed_description">冻它辅助模块</string>
 
-    <string name="website_link">https://jark006.gitee.io/i/freezeit/</string>
-    <string name="tutorial_link">https://jark006.gitee.io/FreezeitIntroduction/</string>
-    <string name="update_json_link">https://mirror.ghproxy.com/https://raw.githubusercontent.com/jark006/freezeitRelease/main/update.json</string>
-    <string name="online_changelog_link">https://mirror.ghproxy.com/https://raw.githubusercontent.com/jark006/freezeitRelease/main/changelogFull.txt</string>
+    <string name="website_link">https://github.com/szh1118/freezeit_cos16</string>
+    <string name="tutorial_link">https://github.com/szh1118/freezeit_cos16/blob/main/README.md</string>
+    <string name="update_json_link">https://mirror.ghproxy.com/https://raw.githubusercontent.com/szh1118/freezeit_cos16/main/freezeitRelease/update.json</string>
+    <string name="online_changelog_link">https://mirror.ghproxy.com/https://raw.githubusercontent.com/szh1118/freezeit_cos16/main/freezeitRelease/changelogFull.txt</string>
 
 
     <string name="coolapk_text">酷安 @JARK006</string>
@@ -23,7 +23,7 @@
 
     <string name="update_app_label">更新应用名称</string>
     <string name="about">关于</string>
-    <string name="developer">开发者 JARK006</string>
+    <string name="developer">开发者 JARK006 / @szh1118</string>
     <string name="xposed_warn">未激活,无法工作</string>
     <string name="freezeit_offline">冻它未启用或工作异常</string>
     <string name="freezeit_error_tips">
@@ -61,7 +61,7 @@
 
     <string name="slowly_tips">别急，慢点</string>
     <string name="help">帮助</string>
-    <string name="freezeit_tutorial_text">冻它教程说明</string>
+    <string name="freezeit_tutorial_text">发布说明</string>
     <string name="download">下载</string>
 
     <string name="second">秒</string>
@@ -69,8 +69,8 @@
     <string name="lanzou_password">蓝奏云密码: dy6i</string>
     <string name="donate_wechat">微信捐赠</string>
     <string name="donate_alipay">支付宝捐赠</string>
-    <string name="github_open_source">管理器开源</string>
-    <string name="github_project">项目开源</string>
+    <string name="github_open_source">管理器源码（@szh1118）</string>
+    <string name="github_project">项目源码（@szh1118）</string>
     <string name="physical_ram_text">[物理内存] 全部: %1$.2f GiB\n已用:%2$.1f%% 可用: %3$.2f %4$s</string>
     <string name="virtual_ram_text">[虚拟内存] 全部: %1$.2f GiB\n已用:%2$.1f%% 可用: %3$.2f %4$s</string>
     <string name="ext_memory">另有内存扩展: %1$.2f GiB</string>
@@ -171,7 +171,7 @@
     <string name="managerVer">管理器版本</string>
     <string name="kernel_version">内核版本</string>
     <string name="android_version">安卓版本</string>
-    <string name="freezeit_website">冻它官网</string>
+    <string name="freezeit_website">GitHub 仓库</string>
     <string name="set_background">设置背景</string>
     <string name="appFailTips">应用列表获取失败，请授予相关权限</string>
     <string name="xposed_log">Xposed日志</string>

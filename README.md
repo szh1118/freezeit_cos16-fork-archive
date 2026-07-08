@@ -11,12 +11,18 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Current Self-Use Release
 
-- Module version: `3.2.7SelfUse` / versionCode `302007`
+- Module version: `3.2.8SelfUse` / versionCode `302008`
 - Release zip:
-  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip`
+  `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.8SelfUse_302008.zip`
 - Target device: OnePlus 13 / CPH2653 / CPH2653EEA
 - Target system: ColorOS 16 / Android 16
 - Root/Xposed: Magisk or KernelSU with LSPosed IT v2.1.0-it / Modern Xposed API 102
+
+## 3.2.8SelfUse Changes
+
+- Drains full child command output in legacy `vpopen`, preventing large `dumpsys telecom` output from SIGPIPE-killing the native daemon after many frozen apps.
+- Updates module/app author metadata to credit `JARK006 / @szh1118`.
+- Points the manager About page and online update metadata at the maintained `szh1118/freezeit_cos16` fork.
 
 ## 3.2.7SelfUse Changes
 
@@ -69,7 +75,7 @@ Remote: https://github.com/szh1118/freezeit_cos16
 
 ## Install
 
-1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.7SelfUse_302007.zip` in Magisk.
+1. Flash `freezeitRelease/freezeit_oneplus13_android16_selfuse_v3.2.8SelfUse_302008.zip` in Magisk.
 2. Enable the Freezeit module in LSPosed.
 3. Select at least these LSPosed scopes:
    - System framework / `system`

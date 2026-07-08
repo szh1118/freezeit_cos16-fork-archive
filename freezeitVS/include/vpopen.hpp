@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <algorithm>
 
 // because of C++, we can't call err() or errx() within the child, because they call exit(), 
 // and _exit() is what must be called; so we wrap
@@ -132,8 +133,20 @@ namespace VPOPEN {
             return;
         }
 
-        auto resLen = fread(buf, 1, len - 1, fp);
-        if (resLen <= 0) {
+        char drainBuf[4096];
+        size_t resLen = 0;
+        size_t readLen = 0;
+
+        while ((readLen = fread(drainBuf, 1, sizeof(drainBuf), fp)) > 0) {
+            if (resLen >= len - 1)
+                continue;
+
+            const auto copyLen = std::min(readLen, len - 1 - resLen);
+            memcpy(buf + resLen, drainBuf, copyLen);
+            resLen += copyLen;
+        }
+
+        if (resLen == 0) {
             buf[0] = 0;
         } else if (buf[resLen - 1] == '\n') {
             buf[resLen - 1] = 0;
