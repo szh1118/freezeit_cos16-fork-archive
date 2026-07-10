@@ -1,3 +1,7 @@
+> 本仓库为历史 fork 副本，已迁移至：  
+> https://github.com/szh1118/freezeit_cos16  
+> 请到新地址获取更新。
+
 # freezeit_cos16
 
 Freezeit / 冻它 的 COS16 自用维护版。
